@@ -120,7 +120,6 @@ std::string tokenNodeToString(TokenNode *node, bool srcDisplay) {
 }
 
 void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
-    std::cout << "A" << std::endl;
     std::string lexeme = tokenExpressions.at(tokenType);
 
     // old state
@@ -128,7 +127,6 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
     TokenNode *oldNext = node->next;
     TokenNode *newRoot = nullptr;
     TokenNode *currNode = node;
-    std::cout << "b" << std::endl;
 
     int oldEnd = node->end;
     std::string *src = node->src;           // will be copied to all nodes
@@ -142,7 +140,6 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
     std::smatch match;
     auto begin = std::sregex_iterator(input.begin(), input.end(), regex);
     auto end = std::sregex_iterator();
-    std::cout << "c" << std::endl;
 
     // current index of search
     int offset = node->start;
@@ -151,12 +148,7 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
     int matchEnd = 0;
     bool matchFound = false;
 
-    std::cout << "d" << std::endl;
-    std::cout << input << std::endl;
-    
-
     for (auto it = begin; it != end; ++it) {
-        std::cout << "x" << std::endl;
         // match info
         matchFound = true;
         match = *it;
@@ -165,7 +157,6 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
         matchEnd = matchStart + match.length(0);
 
         if (currIndex != matchStart) {
-            std::cout << "C" << std::endl;
             TokenNode *newNode = new TokenNode;
             newNode->tokenType = TOKEN_TYPE::CONTENT;
             newNode->src = src;
@@ -210,7 +201,6 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
     }
 
     if (currIndex + offset != oldEnd && matchFound) {
-        std::cout << "D" << std::endl;
         // create and insert post content node
         TokenNode *newNode = new TokenNode;
         newNode->tokenType = TOKEN_TYPE::CONTENT;
@@ -232,21 +222,17 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
 
 
     if (oldPrev != nullptr) {
-        std::cout << "E" << std::endl;
         if (currNode == node) {
             newRoot = node;
         }
         oldPrev->next = newRoot;
     } else {
-        std::cout << "y" << std::endl;
         if (newRoot != nullptr) {
             *node = *newRoot;
         }
     }
 
     if (oldNext != nullptr) {
-        std::cout << "F" << std::endl;
-        //std::cout << currNode << std::endl;
         oldNext->prev = currNode;
         currNode->next = oldNext;
     }
@@ -257,9 +243,6 @@ void tokenizeNode(TokenNode *node, TOKEN_TYPE tokenType) {
     TokenNode *currNode = node;
 
     while (currNode != nullptr) {
-        std::cout << "it" << std::endl;
-        //TokenNode *nextNode = currNode->next;
-
         if (currNode->tokenType == TOKEN_TYPE::CONTENT) {
             tokenizeContentNode(currNode, tokenType);
         }
@@ -280,22 +263,11 @@ int tokenize(std::string *srcContents) {
 
     // tokenize for each lexeme
     tokenizeNode(root, TOKEN_TYPE::STRING);
-    //std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
     tokenizeNode(root, TOKEN_TYPE::L_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
-    //std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
-    tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
     std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
-    //tokenizeContentNode(root->next->next, TOKEN_TYPE::R_DELIMETER);
-    //std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
-    //tokenizeContentNode(root, TOKEN_TYPE::L_DELIMETER);
-    //std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
-    //tokenizeNode(root, TOKEN_TYPE::OP_DOT);
-    //std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
-
-    //std::cout << TokenNodeToString(root) << std::endl << std::endl << std::endl;
 
     return 0;
 }

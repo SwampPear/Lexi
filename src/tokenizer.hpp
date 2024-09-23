@@ -1,7 +1,7 @@
-#include <sstream>
-#include <memory>
 #include <map>
 #include <regex>
+#include <sstream>
+#include "linked_list.hpp"
 
 // lexeme types of token
 enum TOKEN_TYPE {
@@ -65,61 +65,15 @@ const std::map<TOKEN_TYPE, std::string> tokenNames {
     {TOKEN_TYPE::KEYWORD, "KEYWORD"}
 };
 
-struct TokenNode {
+struct TokenData {
     TOKEN_TYPE tokenType;
     std::string *src;
     int start;
     int end;
-    TokenNode *next;
-    TokenNode *prev;
 };
 
-std::string tokenNodeToString(TokenNode *node, bool srcDisplay) {
-    std::stringstream ss;
-
-    while(node != nullptr) {
-        // this node
-        ss << "<" << tokenNames.at(node->tokenType) << " ";
-        ss << node->start << " ";
-        ss << node->end << ">";
-        ss << " -> ";
-
-        // next node
-        if (node->prev == nullptr) {
-            ss << "<nullptr> ";
-        } else {
-            ss << "<" << tokenNames.at(node->prev->tokenType) << " ";
-            ss << node->prev->start << " ";
-            ss << node->prev->end << "> ";
-        }
-        
-        // next node
-        if (node->next == nullptr) {
-            ss << "<nullptr>";
-        } else {
-            ss << "<" << tokenNames.at(node->next->tokenType) << " ";
-            ss << node->next->start << " ";
-            ss << node->next->end << ">";
-        }
-
-        ss << "\n";
-
-        if (srcDisplay) {
-            std::string src = *node->src;
-            std::string srcInd = src.substr(node->start, node->end - node->start);
-
-            ss << srcInd << std::endl;
-        }
-
-        node = node->next;
-    }
-
-    std::string output = ss.str();
-
-    return output;
-}
-
-void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
+void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
+    /*
     if (tokenType == TOKEN_TYPE::R_DELIMETER) { std::cout << "a\n"; };
     std::string lexeme = tokenExpressions.at(tokenType);
 
@@ -255,9 +209,10 @@ void tokenizeContentNode(TokenNode *node, TOKEN_TYPE tokenType) {
         oldNext->prev = currNode;
         currNode->next = oldNext;
     }
+    */
 }
 
-
+/*
 void tokenizeNode(TokenNode *node, TOKEN_TYPE tokenType) {
     TokenNode *currNode = node;
 
@@ -269,10 +224,58 @@ void tokenizeNode(TokenNode *node, TOKEN_TYPE tokenType) {
 
         currNode = currNode->next;
     }
+}*/
+
+std::string tokenNodeToString(LLNode<TokenData> *node, bool displayContent) {
+    std::stringstream ss;
+
+    if (node != nullptr) {
+        ss << "<" << tokenNames.at(node->data->tokenType);
+        ss << " " << node->data->start << " ";
+        ss << node->data->end;
+        ss << ">";
+
+        ss << " - ";
+
+        if (node->prev != nullptr) {
+            ss << "<" << tokenNames.at(node->prev->data->tokenType);
+            ss << " " << node->prev->data->start << ", ";
+            ss << " " << node->prev->data->end << ">, ";
+        } else {
+            ss << "<null>, ";
+        }
+
+        if (node->next != nullptr) {
+            ss << "<" << tokenNames.at(node->next->data->tokenType);
+            ss << " " << node->next->data->start << ", ";
+            ss << " " << node->next->data->end << ">\n";
+        } else {
+            ss << "<null>\n";
+        }
+
+        if (displayContent) {
+            ss << *node->data->src;
+        }
+    } else {
+        ss << "null" << std::endl;
+    }
+
+    return ss.str();
 }
 
 
-TokenNode *tokenize(std::string *srcContents) {
+LLNode<TokenData> *tokenize(std::string *srcContents) {
+    LLNode<TokenData> *root = new LLNode<TokenData>();
+    TokenData *tokenData = new TokenData;
+    tokenData->tokenType = TOKEN_TYPE::CONTENT;
+    tokenData->src = srcContents;
+    tokenData->start = 0;
+    tokenData->end = srcContents->length();
+
+    root->data = tokenData;
+    root->next = nullptr;
+    root->prev = nullptr;
+    /*
     // init root content node
     TokenNode *root = new TokenNode;
     root->tokenType = TOKEN_TYPE::CONTENT;
@@ -289,7 +292,7 @@ TokenNode *tokenize(std::string *srcContents) {
     tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
     std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
     //tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
-    //tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
+    //tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);*/
 
     return root;
 }

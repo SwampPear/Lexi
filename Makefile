@@ -1,6 +1,6 @@
 CC = g++
 
-TARGET = bootstrapper
+TARGET = lexi
 SRC_PATH = src
 SUB_DIR = src
 
@@ -8,12 +8,8 @@ CFLAGS = -std=c++17 -Wall -I $(SRC_PATH)
 
 all: $(TARGET)
 
-lexi: src/main.cpp src/tokenizer.hpp src/utils.hpp
-	$(CC) $(CFLAGS) -o lexi src/main.cpp
-
-tests: test/main.cpp src/tokenizer.hpp src/utils.hpp
-	$(CC) $(CFLAGS) -o tests test/main.cpp
+$(TARGET): src/main.cpp src/tokenizer.hpp src/utils.hpp
+	$(CC) $(CFLAGS) -o $(TARGET) src/main.cpp
 
 clean:
-	$(RM) lexi
-	$(RM) tests
+	$(RM) $(TARGET)

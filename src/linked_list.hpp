@@ -56,6 +56,8 @@ void print(LLNode<T> *head) {
             std::cout << *(current->data);
             if (current->prev != nullptr || current->next != nullptr) {
                 std::cout << " - ";
+            } else {
+                std::cout << " - ";
             }
 
             if (current->prev != nullptr) {

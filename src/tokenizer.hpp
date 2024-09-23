@@ -252,7 +252,7 @@ void tokenizeNode(TokenNode *node, TOKEN_TYPE tokenType) {
 }
 
 
-int tokenize(std::string *srcContents) {
+TokenNode *tokenize(std::string *srcContents) {
     // init root content node
     TokenNode *root = new TokenNode;
     root->tokenType = TOKEN_TYPE::CONTENT;
@@ -267,7 +267,6 @@ int tokenize(std::string *srcContents) {
     tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
-    std::cout << tokenNodeToString(root, true) << std::endl << std::endl << std::endl;
 
-    return 0;
+    return root;
 }

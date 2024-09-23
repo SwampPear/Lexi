@@ -8,8 +8,12 @@ CFLAGS = -std=c++17 -Wall -I $(SRC_PATH)
 
 all: $(TARGET)
 
-$(TARGET): $(wildcard *.cpp $(foreach fd, ${SUB_DIR}, $(fd)/*.cpp)) $(wildcard *.hpp $(foreach fd, ${SUB_DIR}, $(fd)/*.hpp))
-	$(CC) $(CFLAGS) -o $(TARGET) $(wildcard *.cpp $(foreach fd, ${SUB_DIR}, $(fd)/*.cpp))
+lexi: src/main.cpp src/tokenizer.hpp src/utils.hpp
+	$(CC) $(CFLAGS) -o lexi src/main.cpp
+
+tests: test/main.cpp src/tokenizer.hpp src/utils.hpp
+	$(CC) $(CFLAGS) -o tests test/main.cpp
 
 clean:
-	$(RM) $(TARGET)
+	$(RM) lexi
+	$(RM) tests

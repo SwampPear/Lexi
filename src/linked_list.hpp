@@ -42,7 +42,7 @@ void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
     }
     
     if (oldNext != nullptr) {
-        oldNext->prev = replacement;
+        oldNext->prev = currNode;
     }
 }
 
@@ -53,7 +53,26 @@ void print(LLNode<T> *head) {
     // Traverse through the linked list
     while (current != nullptr) {
         if (current->data != nullptr) {
-            std::cout << *(current->data) << "\n";
+            std::cout << *(current->data);
+            if (current->prev != nullptr || current->next != nullptr) {
+                std::cout << " - ";
+            }
+
+            if (current->prev != nullptr) {
+                std::cout << *(current->prev->data);
+            } else {
+                std::cout << "n";
+            }
+
+            std::cout << ", ";
+
+            if (current->next != nullptr) {
+                std::cout << *(current->next->data);
+            } else {
+                std::cout << "n";
+            }
+
+            std::cout << "\n";
         } else {
             std::cout << "null\n";
         }

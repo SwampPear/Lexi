@@ -5,15 +5,46 @@
 #include <iostream>
 #include "linked_list.hpp"
 
+void test_links_head() {
+    std::cout << "insert at head" << std::endl;
+    // list 1
+    LLNode<int> *head1 = testList(0, 5);
+
+    // list 1
+    LLNode<int> *head2 = testList(10, 10);
+    replace(head1, head2);
+
+    print(head1);
+}
+
+void test_links_middle() {
+    std::cout << "insert at middle" << std::endl;
+    // list 1
+    LLNode<int> *head1 = testList(0, 5);
+
+    // list 1
+    LLNode<int> *head2 = testList(10, 10);
+    replace(head1->next->next, head2);
+
+    print(head1);
+}
+
+void test_links_last() {
+    std::cout << "insert at end" << std::endl;
+    // list 1
+    LLNode<int> *head1 = testList(0, 5);
+
+    // list 1
+    LLNode<int> *head2 = testList(10, 10);
+    replace(head1->next->next->next->next, head2);
+
+    print(head1);
+}
 
 int main() {
-    test_insert_at_head();
-    test_insert_in_middle();
-    test_insert_at_end();
-    test_single_insert_at_head();
-    test_single_insert_in_middle();
-    test_single_insert_at_end();
-
+    test_links_head();
+    test_links_middle();
+    test_links_last();
     // list 1
     //LLNode<int> *head1 = testList(0, 7);
 

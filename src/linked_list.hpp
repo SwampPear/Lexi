@@ -63,3 +63,30 @@ void print(LLNode<T> *head) {
     
     std::cout << std::endl;
 }
+
+LLNode<int> *testList(int min, int max) {
+    // node 1
+    LLNode<int> *root = new LLNode<int>();
+    int *data = new int(min);
+    root->data = data;
+    root->next = nullptr;
+    root->prev = nullptr;
+
+    // test list 1
+    LLNode<int> *prevNode = root;
+
+    for (int i = min + 1; i < max; i++) {
+        LLNode<int> *newNode = new LLNode<int>();
+
+        int *newData = new int(i);
+        newNode->data = newData;
+
+        newNode->next = nullptr;
+        newNode->prev = prevNode;
+
+        prevNode->next = newNode;
+        prevNode = newNode;
+    }
+
+    return root;
+}

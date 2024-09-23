@@ -1,4 +1,4 @@
-// this is some comment that should be parsed OUT
+() // this is some comment that should be parsed OUT
 main() {
     let a = "what is this str}ing"
 }

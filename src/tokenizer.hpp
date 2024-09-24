@@ -72,7 +72,7 @@ struct TokenData {
     int end;
 };
 
-void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
+//void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
     /*
     if (tokenType == TOKEN_TYPE::R_DELIMETER) { std::cout << "a\n"; };
     std::string lexeme = tokenExpressions.at(tokenType);
@@ -210,7 +210,7 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
         currNode->next = oldNext;
     }
     */
-}
+//}
 
 /*
 void tokenizeNode(TokenNode *node, TOKEN_TYPE tokenType) {
@@ -254,7 +254,10 @@ std::string tokenNodeToString(LLNode<TokenData> *node, bool displayContent) {
         }
 
         if (displayContent) {
-            ss << *node->data->src;
+            std::string display = *node->data->src;
+            int i = node->data->start;
+            int j = node->data->end - node->data->start;
+            ss << display.substr(i, j) << "\n";
         }
     } else {
         ss << "null" << std::endl;
@@ -263,6 +266,174 @@ std::string tokenNodeToString(LLNode<TokenData> *node, bool displayContent) {
     return ss.str();
 }
 
+std::string tokenToString(LLNode<TokenData> *node, bool displayContent) {
+    std::stringstream ss;
+
+    LLNode<TokenData> *curr = node;
+
+    while(curr != nullptr) {
+        std::cout << "it" << std::endl;
+        ss << tokenNodeToString(curr, displayContent);
+        curr = curr->next;
+    }
+
+    return ss.str();
+}
+
+void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
+    if (node == nullptr) return;
+    if (node->data->tokenType != TOKEN_TYPE::CONTENT) return;
+
+    std::string lexeme = tokenExpressions.at(tokenType);
+    std::cout << "b" << std::endl;
+
+    int oldEnd = node->data->end;
+    std::string *src = node->data->src;           // will be copied to all nodes
+
+    // src file content for within content node scope
+    std::string input = *src;
+    input = input.substr(node->data->start, node->data->end - node->data->start);
+
+    // match lexeme
+    std::regex regex(lexeme);
+    std::smatch match;
+    auto begin = std::sregex_iterator(input.begin(), input.end(), regex);
+    auto end = std::sregex_iterator();
+
+    // current index of search
+    int offset = node->data->start;
+    int currIndex = 0;
+    int matchStart = 0;
+    int matchEnd = 0;
+    bool matchFound = false;
+
+    LLNode<TokenData> *rootNode;
+    LLNode<TokenData> *currNode;
+    std::cout << "c" << std::endl;
+
+    for (auto it = begin; it != end; ++it) {
+        std::cout << "d" << std::endl;
+        // match info
+        matchFound = true;
+        match = *it;
+        std::string matchContents = match.str(0);
+        matchStart = match.position(0);
+        matchEnd = matchStart + match.length(0);
+
+        if (currIndex != matchStart) {
+            std::cout << "e" << std::endl;
+            LLNode<TokenData> *node = new LLNode<TokenData>();
+            TokenData *tokenData = new TokenData;
+            tokenData->tokenType = TOKEN_TYPE::CONTENT;
+            tokenData->src = src;
+            tokenData->start = currIndex + offset;
+            tokenData->end = matchStart + offset;
+
+            node->data = tokenData;
+            node->next = nullptr;
+            node->prev = nullptr;
+
+            // update index
+            currIndex = matchStart;
+
+            // link node
+            if (rootNode == nullptr) {      // first node case
+                // initially set iterator node
+                rootNode = node;
+                currNode = rootNode;
+            } else {                        // not first
+                // link this node to iterator node
+                node->prev = currNode;
+                node->prev->next = node;
+
+                // iterate iterator node
+                currNode = node;
+            }
+        }
+
+        // lexical node
+        LLNode<TokenData> *node = new LLNode<TokenData>();
+        TokenData *tokenData = new TokenData;
+        tokenData->tokenType = tokenType;
+        tokenData->src = src;
+        tokenData->start = matchStart + offset;
+        tokenData->end = matchEnd + offset;
+
+        node->data = tokenData;
+        node->next = nullptr;
+        node->prev = nullptr;
+
+        // update index
+        currIndex = matchEnd;
+
+        // link node
+        if (rootNode == nullptr) {      // first node case
+            // initially set iterator node
+            rootNode = node;
+            currNode = rootNode;
+        } else {                        // not first
+            // link this node to iterator node
+            node->prev = currNode;
+            node->prev->next = node;
+
+            // iterate iterator node
+            currNode = node;
+        }
+    }
+
+    // suffix content node
+    if (currIndex + offset != oldEnd && matchFound) {
+        std::cout << "f" << std::endl;
+        if (tokenType == TOKEN_TYPE::R_DELIMETER) { std::cout << "f\n"; };
+        // create and insert post content node
+        LLNode<TokenData> *node = new LLNode<TokenData>();
+        TokenData *tokenData = new TokenData;
+        tokenData->tokenType = TOKEN_TYPE::CONTENT;
+        tokenData->src = src;
+        tokenData->start = currIndex + offset;
+        tokenData->end = oldEnd;
+
+        node->data = tokenData;
+        node->next = nullptr;
+        node->prev = nullptr;
+
+        // link node
+        if (rootNode == nullptr) {      // first node case
+            std::cout << "g" << std::endl;
+            // initially set iterator node
+            rootNode = node;
+            currNode = rootNode;
+        } else {                        // not first
+            std::cout << "h" << std::endl;
+            // link this node to iterator node
+            node->prev = currNode;
+            node->prev->next = node;
+
+            // iterate iterator node
+            currNode = node;
+        }
+    }
+
+    if (rootNode != nullptr) {
+        replace(node, rootNode);
+    }
+
+    std::cout << tokenToString(node, true) << std::endl << std::endl << std::endl << std::endl;
+}
+
+void tokenizeNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
+    LLNode<TokenData> *currNode = node;
+
+    while (currNode != nullptr) {
+        LLNode<TokenData> *nextNode = currNode->next;
+
+        std::cout << "a" << std::endl;
+        tokenizeContentNode(currNode, tokenType);
+        std::cout << "b" << std::endl;
+
+        currNode = nextNode;
+    }
+}
 
 LLNode<TokenData> *tokenize(std::string *srcContents) {
     LLNode<TokenData> *root = new LLNode<TokenData>();
@@ -275,6 +446,15 @@ LLNode<TokenData> *tokenize(std::string *srcContents) {
     root->data = tokenData;
     root->next = nullptr;
     root->prev = nullptr;
+
+    tokenizeContentNode(root, TOKEN_TYPE::STRING);
+    //std::cout << tokenNodeToString(root, true) << std::endl;
+    //tokenizeContentNode(root->next, TOKEN_TYPE::L_DELIMETER);
+    //std::cout << tokenNames.at(root->data->tokenType) << std::endl;
+
+    //tokenizeContentNode(root, TOKEN_TYPE::L_DELIMETER);
+    
+        
     /*
     // init root content node
     TokenNode *root = new TokenNode;

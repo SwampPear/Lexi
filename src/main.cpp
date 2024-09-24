@@ -16,7 +16,6 @@ int main() {
     // 2. read src file and tokenize contents into token tree
     std::string srcContents = readFile(cwd/src);
     LLNode<TokenData> *root = tokenize(&srcContents);
-    std::cout << tokenNodeToString(root, true) << std::endl;
 
     return EXIT_SUCCESS;
 }

@@ -45,7 +45,6 @@ template <typename T>
 void print(LLNode<T> *head) {
     LLNode<T> *current = head;
     
-    // Traverse through the linked list
     while (current != nullptr) {
         if (current->data != nullptr) {
             std::cout << *(current->data);

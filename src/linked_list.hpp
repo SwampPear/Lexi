@@ -19,11 +19,10 @@ void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
     }
 
     // record old state
-    LLNode<T> *oldPrev = replaced->prev;
     LLNode<T> *oldNext = replaced->next;
 
     // replace previous
-    replacement->prev = oldPrev;
+    replacement->prev = replaced->prev;
 
     // replace next
     LLNode<T> *currNode = replacement;
@@ -33,17 +32,13 @@ void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
     }
 
     currNode->next = oldNext;
-    
-    // connect to replacement
-    if (oldPrev != nullptr) {
-        oldPrev->next = replacement;
-    } else {
-        *replaced = *replacement;
-    }
-    
+
     if (oldNext != nullptr) {
         oldNext->prev = currNode;
     }
+
+    // connect to replacement
+    *replaced = *replacement;
 }
 
 template <typename T>

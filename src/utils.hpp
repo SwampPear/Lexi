@@ -1,3 +1,6 @@
+// Copyright 2024 Michael Vaden
+#pragma once
+
 #include <iostream>
 #include <cstdlib>
 #include <filesystem>

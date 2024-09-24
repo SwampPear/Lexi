@@ -1,7 +1,11 @@
+// Copyright 2024 Michael Vaden
+#pragma once
+
 #include <map>
 #include <regex>
 #include <sstream>
-#include "linked_list.hpp"
+#include <string>
+#include "src/linked_list.hpp"
 
 // lexeme types of token
 enum TOKEN_TYPE {
@@ -117,7 +121,7 @@ std::string tokenToString(LLNode<TokenData> *node, bool displayContent) {
 
     LLNode<TokenData> *curr = node;
 
-    while(curr != nullptr) {
+    while (curr != nullptr) {
         ss << tokenNodeToString(curr, displayContent);
         curr = curr->next;
     }
@@ -277,7 +281,7 @@ LLNode<TokenData> *tokenize(std::string *srcContents) {
     tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
     tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
-    std::cout << tokenToString(root, true) << std::endl << std::endl << std::endl << std::endl;
+    std::cout << tokenToString(root, true) << std::endl;
 
     return root;
 }

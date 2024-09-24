@@ -1,3 +1,5 @@
+// Copyright 2024 Michael Vaden
+
 #include <iostream>
 #include <cstdlib>
 #include <filesystem>
@@ -5,8 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
-#include "utils.hpp"
-#include "tokenizer.hpp"
+#include "src/utils.hpp"
+#include "src/tokenizer.hpp"
 
 int main() {
     std::filesystem::path cwd = getCWD();

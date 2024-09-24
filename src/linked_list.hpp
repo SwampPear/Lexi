@@ -1,3 +1,6 @@
+// Copyright 2024 Michael Vaden
+#pragma once
+
 #include <stdexcept>
 #include <iostream>
 
@@ -44,7 +47,7 @@ void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
 template <typename T>
 void print(LLNode<T> *head) {
     LLNode<T> *current = head;
-    
+
     while (current != nullptr) {
         if (current->data != nullptr) {
             std::cout << *(current->data);
@@ -72,10 +75,10 @@ void print(LLNode<T> *head) {
         } else {
             std::cout << "null\n";
         }
-        
+
         current = current->next;
     }
-    
+
     std::cout << std::endl;
 }
 

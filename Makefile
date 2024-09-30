@@ -8,7 +8,7 @@ CFLAGS = -std=c++17 -Wall -I $(SRC_PATH)
 
 all: $(TARGET)
 
-$(TARGET): src/main.cpp src/tokenizer.hpp src/utils.hpp
+$(TARGET): src/main.cpp src/lexi.hpp src/utils.hpp
 	$(CC) $(CFLAGS) -o $(TARGET) src/main.cpp
 
 clean:

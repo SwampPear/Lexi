@@ -7,8 +7,8 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
-#include "src/utils.hpp"
-#include "src/tokenizer.hpp"
+#include "utils.hpp"
+#include "tokenizer.hpp"
 
 int main() {
     std::filesystem::path cwd = getCWD();

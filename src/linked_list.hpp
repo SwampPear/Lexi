@@ -3,16 +3,17 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <memory>
 
 template <typename T>
 struct LLNode {
-    T *data;
-    LLNode<T> *next;
-    LLNode<T> *prev;
+    std::shared_ptr<T> data;
+    std::shared_ptr<LLNode<T>> next;
+    std::shared_ptr<LLNode<T>> prev;
 };
 
 template <typename T>
-void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
+void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> replacement) {
     if (replaced == nullptr) {
         throw std::runtime_error("The replaced node cannot be null.");
     }
@@ -22,13 +23,13 @@ void replace(LLNode<T> *replaced, LLNode<T> *replacement) {
     }
 
     // record old state
-    LLNode<T> *oldNext = replaced->next;
+    std::shared_ptr<LLNode<T>> oldNext = replaced->next;
 
     // replace previous
     replacement->prev = replaced->prev;
 
     // replace next
-    LLNode<T> *currNode = replacement;
+    std::shared_ptr<LLNode<T>> currNode = replacement;
 
     while (currNode->next != nullptr) {
         currNode = currNode->next;
@@ -82,6 +83,7 @@ void print(LLNode<T> *head) {
     std::cout << std::endl;
 }
 
+/*
 LLNode<int> *testList(int min, int max) {
     // node 1
     LLNode<int> *root = new LLNode<int>();
@@ -107,4 +109,4 @@ LLNode<int> *testList(int min, int max) {
     }
 
     return root;
-}
+}*/

@@ -76,7 +76,7 @@ struct TokenData {
     int end;
 };
 
-std::string tokenNodeToString(LLNode<TokenData> *node, bool displayContent) {
+std::string tokenNodeToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
     std::stringstream ss;
 
     if (node != nullptr) {
@@ -116,10 +116,12 @@ std::string tokenNodeToString(LLNode<TokenData> *node, bool displayContent) {
     return ss.str();
 }
 
-std::string tokenToString(LLNode<TokenData> *node, bool displayContent) {
+std::string tokenToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
     std::stringstream ss;
 
-    LLNode<TokenData> *curr = node;
+    std::shared_ptr<LLNode<TokenData>> curr = node;
+
+    //LLNode<TokenData> *curr = node;
 
     while (curr != nullptr) {
         ss << tokenNodeToString(curr, displayContent);
@@ -129,7 +131,7 @@ std::string tokenToString(LLNode<TokenData> *node, bool displayContent) {
     return ss.str();
 }
 
-void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
+void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tokenType) {
     // regex mapped to token type
     std::string expression = tokenExpressions.at(tokenType);
 
@@ -155,8 +157,8 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
     int matchEnd = 0;
     bool matchFound = false;
 
-    LLNode<TokenData> *rootNode = nullptr;
-    LLNode<TokenData> *currNode = nullptr;
+    std::shared_ptr<LLNode<TokenData>> rootNode = nullptr;
+    std::shared_ptr<LLNode<TokenData>> currNode = nullptr;
 
     for (auto it = begin; it != end; ++it) {
         // match information
@@ -168,8 +170,9 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
 
         // prefix content node
         if (currIndex != matchStart) {
-            LLNode<TokenData> *node = new LLNode<TokenData>;
-            TokenData *tokenData = new TokenData;
+            std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
+            std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
+            //TokenData *tokenData = new TokenData;
             tokenData->tokenType = TOKEN_TYPE::CONTENT;
             tokenData->src = src;
             tokenData->start = currIndex + offset;
@@ -195,8 +198,10 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
         }
 
         // lexical node
-        LLNode<TokenData> *node = new LLNode<TokenData>;
-        TokenData *tokenData = new TokenData;
+        std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
+        //LLNode<TokenData> *node = new LLNode<TokenData>;
+        std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
+        //TokenData *tokenData = new TokenData;
         tokenData->tokenType = tokenType;
         tokenData->src = src;
         tokenData->start = matchStart + offset;
@@ -223,8 +228,10 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
 
     // suffix content node
     if (currIndex + offset != oldEnd && matchFound) {
-        LLNode<TokenData> *node = new LLNode<TokenData>;
-        TokenData *tokenData = new TokenData;
+        std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
+        //LLNode<TokenData> *node = new LLNode<TokenData>;
+        //TokenData *tokenData = new TokenData;
+        std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
         tokenData->tokenType = TOKEN_TYPE::CONTENT;
         tokenData->src = src;
         tokenData->start = currIndex + offset;
@@ -252,8 +259,9 @@ void tokenizeContentNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
     }
 }
 
-void tokenizeNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
-    LLNode<TokenData> *currNode = node;
+void tokenizeNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tokenType) {
+    std::shared_ptr<LLNode<TokenData>> currNode = node;
+    //LLNode<TokenData> *currNode = node;
 
     while (currNode != nullptr) {
         if (currNode->data->tokenType == TOKEN_TYPE::CONTENT) {
@@ -264,9 +272,11 @@ void tokenizeNode(LLNode<TokenData> *node, TOKEN_TYPE tokenType) {
     }
 }
 
-LLNode<TokenData> *tokenize(std::string *srcContents) {
-    LLNode<TokenData> *root = new LLNode<TokenData>();
-    TokenData *tokenData = new TokenData;
+std::shared_ptr<LLNode<TokenData>> tokenize(std::string *srcContents) {
+    //LLNode<TokenData> *root = new LLNode<TokenData>();
+    std::shared_ptr<LLNode<TokenData>> root = std::make_shared<LLNode<TokenData>>();
+    //TokenData *tokenData = new TokenData;
+    std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
     tokenData->tokenType = TOKEN_TYPE::CONTENT;
     tokenData->src = srcContents;
     tokenData->start = 0;

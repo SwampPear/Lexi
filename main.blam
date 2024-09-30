@@ -1,7 +1,7 @@
-main() {
+(((main() {
     let a = "what is this string"
 }
 
 main() {
     let b = 4
-}
+}}}{}

@@ -13,53 +13,6 @@
 
 namespace Lexi {
 
-template <typename T>
-struct LLNode {
-    std::shared_ptr<T> data;
-    std::shared_ptr<LLNode<T>> next;
-    std::shared_ptr<LLNode<T>> prev;
-};
-
-struct TokenData {
-    TOKEN_TYPE tokenType;
-    std::string *src;
-    int start;
-    int end;
-};
-
-template <typename T>
-void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> replacement) {
-    if (replaced == nullptr) {
-        throw std::runtime_error("The replaced node cannot be null.");
-    }
-
-    if (replacement == nullptr) {
-        throw std::runtime_error("The replacement node cannot be null.");
-    }
-
-    // record old state
-    std::shared_ptr<LLNode<T>> oldNext = replaced->next;
-
-    // replace previous
-    replacement->prev = replaced->prev;
-
-    // replace next
-    std::shared_ptr<LLNode<T>> currNode = replacement;
-
-    while (currNode->next != nullptr) {
-        currNode = currNode->next;
-    }
-
-    currNode->next = oldNext;
-
-    if (oldNext != nullptr) {
-        oldNext->prev = currNode;
-    }
-
-    // connect to replacement
-    *replaced = *replacement;
-}
-
 // lexeme types of token
 enum TOKEN_TYPE {
     STRING,
@@ -122,41 +75,95 @@ const std::map<TOKEN_TYPE, std::string> tokenNames {
     {TOKEN_TYPE::KEYWORD, "KEYWORD"}
 };
 
+template <typename T>
+struct LLNode {
+    std::shared_ptr<T> data;
+    std::shared_ptr<LLNode<T>> next;
+    std::shared_ptr<LLNode<T>> prev;
+};
+
+struct TokenData {
+    TOKEN_TYPE tokenType;
+    std::string *src;
+    int start;
+    int end;
+};
+
+std::shared_ptr<LLNode<TokenData>> createNode(TOKEN_TYPE tokenType, std::string *src, int start, int end) {
+    std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
+
+    std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
+    tokenData->tokenType = tokenType;
+    tokenData->src = src;
+    tokenData->start = start;
+    tokenData->end = end;
+
+    node->data = tokenData;
+
+    return node;
+}
+
+
+template <typename T>
+void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> replacement) {
+    if (replaced == nullptr) {
+        throw std::runtime_error("The replaced node cannot be null.");
+    }
+
+    if (replacement == nullptr) {
+        throw std::runtime_error("The replacement node cannot be null.");
+    }
+
+    // record old state
+    std::shared_ptr<LLNode<T>> oldNext = replaced->next;
+
+    // replace previous
+    replacement->prev = replaced->prev;
+
+    // replace next
+    std::shared_ptr<LLNode<T>> currNode = replacement;
+
+    while (currNode->next != nullptr) {
+        currNode = currNode->next;
+    }
+
+    currNode->next = oldNext;
+
+    if (oldNext != nullptr) {
+        oldNext->prev = currNode;
+    }
+
+    // connect to replacement
+    *replaced = *replacement;
+}
+
 std::string tokenNodeToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
+    if (node == nullptr) return "<null>";
+
     std::stringstream ss;
 
-    if (node != nullptr) {
-        ss << "<" << tokenNames.at(node->data->tokenType);
-        ss << " " << node->data->start << " ";
-        ss << node->data->end;
-        ss << ">";
+    ss << "<" << tokenNames.at(node->data->tokenType) << " ";
+    ss << node->data->start << " " << node->data->end << "> - ";
 
-        ss << " - ";
-
-        if (node->prev != nullptr) {
-            ss << "<" << tokenNames.at(node->prev->data->tokenType);
-            ss << " " << node->prev->data->start << ", ";
-            ss << " " << node->prev->data->end << ">, ";
-        } else {
-            ss << "<null>, ";
-        }
-
-        if (node->next != nullptr) {
-            ss << "<" << tokenNames.at(node->next->data->tokenType);
-            ss << " " << node->next->data->start << ", ";
-            ss << " " << node->next->data->end << ">\n";
-        } else {
-            ss << "<null>\n";
-        }
-
-        if (displayContent) {
-            std::string display = *node->data->src;
-            int i = node->data->start;
-            int j = node->data->end - node->data->start;
-            ss << display.substr(i, j) << "\n";
-        }
+    if (node->prev != nullptr) {
+        ss << "<" << tokenNames.at(node->prev->data->tokenType) << " ";
+        ss << node->prev->data->start << ", " << node->prev->data->end << ">, ";
     } else {
-        ss << "null" << std::endl;
+        ss << "<null>, ";
+    }
+
+    if (node->next != nullptr) {
+        ss << "<" << tokenNames.at(node->next->data->tokenType) << " ";
+        ss << node->next->data->start << ", " << node->next->data->end << ">, ";
+    } else {
+        ss << "<null>, ";
+    }
+
+    if (displayContent) {
+        std::string display = *node->data->src;
+        int i = node->data->start;
+        int j = node->data->end - node->data->start;
+        ss << display.substr(i, j) << "\n";
     }
 
     return ss.str();
@@ -214,15 +221,9 @@ void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tok
 
         // prefix content node
         if (currIndex != matchStart) {
-            std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
-            std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
-            //TokenData *tokenData = new TokenData;
-            tokenData->tokenType = TOKEN_TYPE::CONTENT;
-            tokenData->src = src;
-            tokenData->start = currIndex + offset;
-            tokenData->end = matchStart + offset;
+            std::shared_ptr<LLNode<TokenData>> node = createNode(
+                TOKEN_TYPE::CONTENT, src, currIndex + offset, matchStart + offset);
 
-            node->data = tokenData;
             node->next = nullptr;
             node->prev = nullptr;
 
@@ -242,16 +243,8 @@ void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tok
         }
 
         // lexical node
-        std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
-        //LLNode<TokenData> *node = new LLNode<TokenData>;
-        std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
-        //TokenData *tokenData = new TokenData;
-        tokenData->tokenType = tokenType;
-        tokenData->src = src;
-        tokenData->start = matchStart + offset;
-        tokenData->end = matchEnd + offset;
-
-        node->data = tokenData;
+        std::shared_ptr<LLNode<TokenData>> node = createNode(
+            tokenType, src, matchStart + offset, matchEnd + offset);
         node->next = nullptr;
         node->prev = nullptr;
 
@@ -272,14 +265,9 @@ void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tok
 
     // suffix content node
     if (currIndex + offset != oldEnd && matchFound) {
-        std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
-        std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
-        tokenData->tokenType = TOKEN_TYPE::CONTENT;
-        tokenData->src = src;
-        tokenData->start = currIndex + offset;
-        tokenData->end = oldEnd;
+        std::shared_ptr<LLNode<TokenData>> node = createNode(
+            TOKEN_TYPE::CONTENT, src, currIndex + offset, oldEnd);
 
-        node->data = tokenData;
         node->next = nullptr;
         node->prev = nullptr;
 
@@ -303,7 +291,6 @@ void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tok
 
 void tokenizeNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tokenType) {
     std::shared_ptr<LLNode<TokenData>> currNode = node;
-    //LLNode<TokenData> *currNode = node;
 
     while (currNode != nullptr) {
         if (currNode->data->tokenType == TOKEN_TYPE::CONTENT) {
@@ -314,15 +301,9 @@ void tokenizeNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tokenType)
     }
 }
 
-std::shared_ptr<LLNode<TokenData>> tokenize(std::string *srcContents) {
-    std::shared_ptr<LLNode<TokenData>> root = std::make_shared<LLNode<TokenData>>();
-    std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
-    tokenData->tokenType = TOKEN_TYPE::CONTENT;
-    tokenData->src = srcContents;
-    tokenData->start = 0;
-    tokenData->end = srcContents->length();
-
-    root->data = tokenData;
+std::shared_ptr<LLNode<TokenData>> tokenize(std::string *src) {
+    std::shared_ptr<LLNode<TokenData>> root = createNode(
+        TOKEN_TYPE::CONTENT, src, 0, src->length());
     root->next = nullptr;
     root->prev = nullptr;
 

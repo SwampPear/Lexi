@@ -137,33 +137,31 @@ void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> rep
     *replaced = *replacement;
 }
 
-std::string tokenNodeToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
+std::string singleNodeToString(std::shared_ptr<LLNode<TokenData>> node) {
     if (node == nullptr) return "<null>";
 
     std::stringstream ss;
 
     ss << "<" << tokenNames.at(node->data->tokenType) << " ";
-    ss << node->data->start << " " << node->data->end << "> - ";
+    ss << node->data->start << " " << node->data->end << ">";
 
-    if (node->prev != nullptr) {
-        ss << "<" << tokenNames.at(node->prev->data->tokenType) << " ";
-        ss << node->prev->data->start << ", " << node->prev->data->end << ">, ";
-    } else {
-        ss << "<null>, ";
-    }
+    return ss.str();
+}
 
-    if (node->next != nullptr) {
-        ss << "<" << tokenNames.at(node->next->data->tokenType) << " ";
-        ss << node->next->data->start << ", " << node->next->data->end << ">, ";
-    } else {
-        ss << "<null>, ";
-    }
+std::string tokenNodeToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
+    if (node == nullptr) return "<null>";
+
+    std::stringstream ss;
+
+    ss << singleNodeToString(node) << " - ";
+    ss << singleNodeToString(node->prev) << ", ";
+    ss << singleNodeToString(node->next);
 
     if (displayContent) {
         std::string display = *node->data->src;
         int i = node->data->start;
         int j = node->data->end - node->data->start;
-        ss << display.substr(i, j) << "\n";
+        ss << "\n" << display.substr(i, j) << "\n";
     }
 
     return ss.str();

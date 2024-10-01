@@ -194,6 +194,9 @@ class Tokenizer {
             matchStart = match.position(0);
             matchEnd = matchStart + match.length(0);
 
+            // zero length match should be rejected
+            if (matchStart == matchEnd) return;
+
             // prefix content node
             if (currIndex != matchStart) {
                 std::shared_ptr<LLNode> node = createNode(

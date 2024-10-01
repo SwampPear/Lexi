@@ -107,33 +107,34 @@ std::shared_ptr<LLNode<TokenData>> createNode(TOKEN_TYPE tokenType, std::string 
 template <typename T>
 void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> replacement) {
     if (replaced == nullptr) {
-        throw std::runtime_error("The replaced node cannot be null.");
+        throw std::runtime_error("Replaced node cannot be null.");
     }
 
     if (replacement == nullptr) {
-        throw std::runtime_error("The replacement node cannot be null.");
+        throw std::runtime_error("Replacement node cannot be null.");
     }
 
-    // record old state
+    // record next node before replacement
     std::shared_ptr<LLNode<T>> oldNext = replaced->next;
 
-    // replace previous
+    // link replacement to replaced previous node 
     replacement->prev = replaced->prev;
 
-    // replace next
+    // locate last node of replacement
     std::shared_ptr<LLNode<T>> currNode = replacement;
 
     while (currNode->next != nullptr) {
         currNode = currNode->next;
     }
 
+    // replace next node of replacement with replaced next
     currNode->next = oldNext;
 
     if (oldNext != nullptr) {
         oldNext->prev = currNode;
     }
 
-    // connect to replacement
+    // finally replace the replacement
     *replaced = *replacement;
 }
 

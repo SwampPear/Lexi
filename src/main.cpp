@@ -28,9 +28,9 @@ int main() {
     tokenizer.addRule("OP_MINUS", "\\-");
     tokenizer.addRule("OP_EQUALS", "=");
     tokenizer.addRule("OP_SLASH", "/");
-    //tokenizer.addRule("SPACE", "\\s*");
     tokenizer.addRule("KEYWORD", "return");
-
+    tokenizer.addRule("SPACE", "\\s+");
+    
     std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
 
     return EXIT_SUCCESS;

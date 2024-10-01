@@ -12,11 +12,19 @@
 #include <string>
 
 namespace Lexi {
+
 template <typename T>
 struct LLNode {
     std::shared_ptr<T> data;
     std::shared_ptr<LLNode<T>> next;
     std::shared_ptr<LLNode<T>> prev;
+};
+
+struct TokenData {
+    TOKEN_TYPE tokenType;
+    std::string *src;
+    int start;
+    int end;
 };
 
 template <typename T>
@@ -50,44 +58,6 @@ void replace(std::shared_ptr<LLNode<T>> replaced, std::shared_ptr<LLNode<T>> rep
 
     // connect to replacement
     *replaced = *replacement;
-}
-
-template <typename T>
-void print(LLNode<T> *head) {
-    LLNode<T> *current = head;
-
-    while (current != nullptr) {
-        if (current->data != nullptr) {
-            std::cout << *(current->data);
-            if (current->prev != nullptr || current->next != nullptr) {
-                std::cout << " - ";
-            } else {
-                std::cout << " - ";
-            }
-
-            if (current->prev != nullptr) {
-                std::cout << *(current->prev->data);
-            } else {
-                std::cout << "n";
-            }
-
-            std::cout << ", ";
-
-            if (current->next != nullptr) {
-                std::cout << *(current->next->data);
-            } else {
-                std::cout << "n";
-            }
-
-            std::cout << "\n";
-        } else {
-            std::cout << "null\n";
-        }
-
-        current = current->next;
-    }
-
-    std::cout << std::endl;
 }
 
 // lexeme types of token
@@ -152,13 +122,6 @@ const std::map<TOKEN_TYPE, std::string> tokenNames {
     {TOKEN_TYPE::KEYWORD, "KEYWORD"}
 };
 
-struct TokenData {
-    TOKEN_TYPE tokenType;
-    std::string *src;
-    int start;
-    int end;
-};
-
 std::string tokenNodeToString(std::shared_ptr<LLNode<TokenData>> node, bool displayContent) {
     std::stringstream ss;
 
@@ -203,8 +166,6 @@ std::string tokenToString(std::shared_ptr<LLNode<TokenData>> node, bool displayC
     std::stringstream ss;
 
     std::shared_ptr<LLNode<TokenData>> curr = node;
-
-    //LLNode<TokenData> *curr = node;
 
     while (curr != nullptr) {
         ss << tokenNodeToString(curr, displayContent);
@@ -312,8 +273,6 @@ void tokenizeContentNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tok
     // suffix content node
     if (currIndex + offset != oldEnd && matchFound) {
         std::shared_ptr<LLNode<TokenData>> node = std::make_shared<LLNode<TokenData>>();
-        //LLNode<TokenData> *node = new LLNode<TokenData>;
-        //TokenData *tokenData = new TokenData;
         std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
         tokenData->tokenType = TOKEN_TYPE::CONTENT;
         tokenData->src = src;
@@ -356,9 +315,7 @@ void tokenizeNode(std::shared_ptr<LLNode<TokenData>> node, TOKEN_TYPE tokenType)
 }
 
 std::shared_ptr<LLNode<TokenData>> tokenize(std::string *srcContents) {
-    //LLNode<TokenData> *root = new LLNode<TokenData>();
     std::shared_ptr<LLNode<TokenData>> root = std::make_shared<LLNode<TokenData>>();
-    //TokenData *tokenData = new TokenData;
     std::shared_ptr<TokenData> tokenData = std::make_shared<TokenData>();
     tokenData->tokenType = TOKEN_TYPE::CONTENT;
     tokenData->src = srcContents;

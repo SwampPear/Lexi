@@ -1,17 +1,11 @@
 // Copyright 2024 Michael Vaden
 
-#include <iostream>
-#include <cstdlib>
 #include <filesystem>
-#include <string>
-#include <fstream>
-#include <memory>
-#include "utils.hpp"
 #include "lexi.hpp"
 
 int main() {
-    std::string path = getCWD()/"main.blam";
-    std::string src = readFile(path);
+    std::string path = std::filesystem::current_path()/"main.blam";
+    std::string src = Lexi::readFile(path);
 
     Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
     tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");

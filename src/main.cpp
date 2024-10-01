@@ -10,82 +10,26 @@
 #include "lexi.hpp"
 
 int main() {
-    std::filesystem::path cwd = getCWD();
-    std::string srcPath = "main.blam";
-
-    /*
-    // lexeme types of token
-    enum TOKEN_TYPE {
-        STRING,
-        CONTENT,
-        SINGLE_LINE_COMMENT,
-        MULTI_LINE_COMMENT,
-        L_DELIMETER,
-        R_DELIMETER,
-        L_CURLY_DELIMETER,
-        R_CURLY_DELIMETER,
-        L_SQUARE_DELIMETER,
-        R_SQUARE_DELIMETER,
-        OP_DOT,
-        OP_PLUS,
-        OP_MINUS,
-        OP_EQUALS,
-        OP_SLASH,
-        SPACE,
-        KEYWORD
-    };
-
-    // maps pertinent token type to corresponding regular expression
-    const std::map<int, std::string> tokenExpressions {
-        {TOKEN_TYPE::STRING, "\"[a-zA-Z0-9\\s\\}]*\""},
-        {TOKEN_TYPE::SINGLE_LINE_COMMENT, "\\/\\/[\\sa-zA-Z0-9]*\n*"},
-        {TOKEN_TYPE::MULTI_LINE_COMMENT, "\\/\\*[\\sa-zA-Z0-9]*\\*\\/"},
-        {TOKEN_TYPE::L_DELIMETER, "\\("},
-        {TOKEN_TYPE::R_DELIMETER, "\\)"},
-        {TOKEN_TYPE::L_CURLY_DELIMETER, "\\{"},
-        {TOKEN_TYPE::R_CURLY_DELIMETER, "\\}"},
-        {TOKEN_TYPE::L_SQUARE_DELIMETER, "\\["},
-        {TOKEN_TYPE::R_SQUARE_DELIMETER, "\\]"},
-        {TOKEN_TYPE::OP_DOT, "\\."},
-        {TOKEN_TYPE::OP_PLUS, "\\+"},
-        {TOKEN_TYPE::OP_MINUS, "-"},
-        {TOKEN_TYPE::OP_EQUALS, "="},
-        {TOKEN_TYPE::OP_SLASH, "/"},
-        {TOKEN_TYPE::SPACE, "\\s*"},
-        {TOKEN_TYPE::KEYWORD, "return"}
-    };
-
-    // maps token type to corresponding token name
-    const std::map<int, std::string> tokenNames {
-        {TOKEN_TYPE::CONTENT, "CONTENT"},
-        {TOKEN_TYPE::STRING, "STRING"},
-        {TOKEN_TYPE::SINGLE_LINE_COMMENT, "SINGLE_LINE_COMMENT"},
-        {TOKEN_TYPE::MULTI_LINE_COMMENT, "MULTI_LINE_COMMENT"},
-        {TOKEN_TYPE::L_DELIMETER, "L_DELIMETER"},
-        {TOKEN_TYPE::R_DELIMETER, "R_DELIMETER"},
-        {TOKEN_TYPE::L_CURLY_DELIMETER, "L_CURLY_DELIMETER"},
-        {TOKEN_TYPE::R_CURLY_DELIMETER, "R_CURLY_DELIMETER"},
-        {TOKEN_TYPE::L_SQUARE_DELIMETER, "L_SQUARE_DELIMETER"},
-        {TOKEN_TYPE::R_SQUARE_DELIMETER, "L_SQUARE_DELIMETER"},
-        {TOKEN_TYPE::OP_DOT, "OP_DOT"},
-        {TOKEN_TYPE::OP_PLUS, "OP_PLUS"},
-        {TOKEN_TYPE::OP_MINUS, "OP_MINUS"},
-        {TOKEN_TYPE::OP_EQUALS, "OP_EQUALS"},
-        {TOKEN_TYPE::OP_SLASH, "OP_SLASH"},
-        {TOKEN_TYPE::SPACE, "SPACE"},
-        {TOKEN_TYPE::KEYWORD, "KEYWORD"}
-    };
-
-    Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
-    */
-    std::string src = readFile(cwd/srcPath);
+    std::string path = getCWD()/"main.blam";
+    std::string src = readFile(path);
 
     Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
     tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");
+    tokenizer.addRule("SINGLE_LINE_COMMENT", "\\/\\/[\\sa-zA-Z0-9]*\n*");
+    tokenizer.addRule("MULTI_LINE_COMMENT", "\\/\\*[\\sa-zA-Z0-9]*\\*\\/");
     tokenizer.addRule("L_DELIMETER", "\\(");
     tokenizer.addRule("R_DELIMETER", "\\)");
     tokenizer.addRule("L_CURLY_DELIMETER", "\\{");
     tokenizer.addRule("R_CURLY_DELIMETER", "\\}");
+    tokenizer.addRule("L_SQUARE_DELIMETER", "\\[");
+    tokenizer.addRule("R_SQUARE_DELIMETER", "\\]");
+    //tokenizer.addRule("OP_DOT", "\\.");
+    //tokenizer.addRule("OP_PLUS", "\\+");
+    //tokenizer.addRule("OP_MINUS", "-");
+    //tokenizer.addRule("OP_EQUALS", "=");
+    //tokenizer.addRule("OP_SLASH", "/");
+    //tokenizer.addRule("SPACE", "\\s*");
+    //tokenizer.addRule("KEYWORD", "return");
 
     std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
 

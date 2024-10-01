@@ -4,9 +4,11 @@
 #include "lexi.hpp"
 
 int main() {
+    // read file to string
     std::string path = std::filesystem::current_path()/"main.blam";
     std::string src = Lexi::readFile(path);
 
+    // build tokenizer
     Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
     tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");
     tokenizer.addRule("SINGLE_LINE_COMMENT", "\\/\\/[\\sa-zA-Z0-9]*\n*");
@@ -25,7 +27,10 @@ int main() {
     tokenizer.addRule("KEYWORD", "return");
     tokenizer.addRule("SPACE", "\\s+");
     
-    std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
+    // tokenize
+    Lexi::TokenNode root = tokenizer.tokenize(&src);
+
+    std::cout << tokenizer.tokenToString(root, true) << std::endl;
 
     return EXIT_SUCCESS;
 }

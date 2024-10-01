@@ -47,6 +47,8 @@ struct LLNode {
     std::shared_ptr<LLNode> prev;
 };
 
+typedef std::shared_ptr<Lexi::LLNode> TokenNode;
+
 class Tokenizer {
  public:
     Tokenizer() {
@@ -72,9 +74,20 @@ class Tokenizer {
             tokenizeNode(root, i);
         }
 
-        std::cout << tokenToString(root, true) << std::endl;
-
         return root;
+    }
+
+    std::string tokenToString(std::shared_ptr<LLNode> node, bool displayContent) {
+        std::stringstream ss;
+
+        std::shared_ptr<LLNode> curr = node;
+
+        while (curr != nullptr) {
+            ss << tokenNodeToString(curr, displayContent);
+            curr = curr->next;
+        }
+
+        return ss.str();
     }
 
  private:
@@ -120,19 +133,6 @@ class Tokenizer {
             int i = node->data->start;
             int j = node->data->end - node->data->start;
             ss << "\n" << display.substr(i, j) << "\n";
-        }
-
-        return ss.str();
-    }
-
-    std::string tokenToString(std::shared_ptr<LLNode> node, bool displayContent) {
-        std::stringstream ss;
-
-        std::shared_ptr<LLNode> curr = node;
-
-        while (curr != nullptr) {
-            ss << tokenNodeToString(curr, displayContent);
-            curr = curr->next;
         }
 
         return ss.str();

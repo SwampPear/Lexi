@@ -11,7 +11,7 @@
 
 int main() {
     std::filesystem::path cwd = getCWD();
-    std::string src = "main.blam";
+    std::string srcPath = "main.blam";
 
     /*
     // lexeme types of token
@@ -77,11 +77,32 @@ int main() {
     };
 
     Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
-    tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");
     */
+    std::string src = readFile(cwd/srcPath);
 
-    std::string srcContents = readFile(cwd/src);
-    std::shared_ptr<Lexi::LLNode> root = Lexi::tokenize(&srcContents);
+    Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
+     //tokenizeNode(root, TOKEN_TYPE::STRING);
+        //tokenizeNode(root, TOKEN_TYPE::L_DELIMETER);
+        //tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
+        //tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
+        //tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
+    /*
+    {TOKEN_TYPE::L_DELIMETER, "\\("},
+        {TOKEN_TYPE::R_DELIMETER, "\\)"},
+        {TOKEN_TYPE::L_CURLY_DELIMETER, "\\{"},
+        {TOKEN_TYPE::R_CURLY_DELIMETER, "\\}"},
+        {TOKEN_TYPE::L_SQUARE_DELIMETER, "\\["},
+        {TOKEN_TYPE::R_SQUARE_DELIMETER, "\\]"},
+    */
+    tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");
+    tokenizer.addRule("L_DELIMETER", "\\(");
+    tokenizer.addRule("R_DELIMETER", "\\)");
+    tokenizer.addRule("L_CURLY_DELIMETER", "\\{");
+    tokenizer.addRule("R_CURLY_DELIMETER", "\\}");
+    std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
+
+    
+    //std::shared_ptr<Lexi::LLNode> root = Lexi::tokenize(&srcContents);
 
     return EXIT_SUCCESS;
 }

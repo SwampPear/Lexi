@@ -23,13 +23,13 @@ int main() {
     tokenizer.addRule("R_CURLY_DELIMETER", "\\}");
     tokenizer.addRule("L_SQUARE_DELIMETER", "\\[");
     tokenizer.addRule("R_SQUARE_DELIMETER", "\\]");
-    //tokenizer.addRule("OP_DOT", "\\.");
-    //tokenizer.addRule("OP_PLUS", "\\+");
-    //tokenizer.addRule("OP_MINUS", "-");
-    //tokenizer.addRule("OP_EQUALS", "=");
-    //tokenizer.addRule("OP_SLASH", "/");
+    tokenizer.addRule("OP_DOT", "\\.");
+    tokenizer.addRule("OP_PLUS", "\\+");
+    tokenizer.addRule("OP_MINUS", "\\-");
+    tokenizer.addRule("OP_EQUALS", "=");
+    tokenizer.addRule("OP_SLASH", "/");
     //tokenizer.addRule("SPACE", "\\s*");
-    //tokenizer.addRule("KEYWORD", "return");
+    tokenizer.addRule("KEYWORD", "return");
 
     std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
 

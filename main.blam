@@ -1,4 +1,4 @@
-(("asdf"(main() {
+(("asdf"(main()[] {
     let a = "what is this string"
 }
 
@@ -6,6 +6,6 @@ main() {
     let b = 4
 }
 
+-
 
-
-"asdf"
+return "asdf"/..+

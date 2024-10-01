@@ -13,6 +13,16 @@
 
 namespace Lexi {
 
+class Tokenizer {
+ public:
+    Tokenizer::Tokenizer() {
+
+    }
+
+ private:
+    
+};
+
 // lexeme types of token
 enum TOKEN_TYPE {
     STRING,

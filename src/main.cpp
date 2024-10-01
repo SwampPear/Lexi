@@ -81,28 +81,13 @@ int main() {
     std::string src = readFile(cwd/srcPath);
 
     Lexi::Tokenizer tokenizer = Lexi::Tokenizer();
-     //tokenizeNode(root, TOKEN_TYPE::STRING);
-        //tokenizeNode(root, TOKEN_TYPE::L_DELIMETER);
-        //tokenizeNode(root, TOKEN_TYPE::R_DELIMETER);
-        //tokenizeNode(root, TOKEN_TYPE::L_CURLY_DELIMETER);
-        //tokenizeNode(root, TOKEN_TYPE::R_CURLY_DELIMETER);
-    /*
-    {TOKEN_TYPE::L_DELIMETER, "\\("},
-        {TOKEN_TYPE::R_DELIMETER, "\\)"},
-        {TOKEN_TYPE::L_CURLY_DELIMETER, "\\{"},
-        {TOKEN_TYPE::R_CURLY_DELIMETER, "\\}"},
-        {TOKEN_TYPE::L_SQUARE_DELIMETER, "\\["},
-        {TOKEN_TYPE::R_SQUARE_DELIMETER, "\\]"},
-    */
     tokenizer.addRule("STRING", "\"[a-zA-Z0-9\\s\\}]*\"");
     tokenizer.addRule("L_DELIMETER", "\\(");
     tokenizer.addRule("R_DELIMETER", "\\)");
     tokenizer.addRule("L_CURLY_DELIMETER", "\\{");
     tokenizer.addRule("R_CURLY_DELIMETER", "\\}");
-    std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
 
-    
-    //std::shared_ptr<Lexi::LLNode> root = Lexi::tokenize(&srcContents);
+    std::shared_ptr<Lexi::LLNode> root = tokenizer.tokenize(&src);
 
     return EXIT_SUCCESS;
 }

@@ -36,7 +36,7 @@ int main() {
     };
 
     // maps pertinent token type to corresponding regular expression
-    const std::map<TOKEN_TYPE, std::string> tokenExpressions {
+    const std::map<int, std::string> tokenExpressions {
         {TOKEN_TYPE::STRING, "\"[a-zA-Z0-9\\s\\}]*\""},
         {TOKEN_TYPE::SINGLE_LINE_COMMENT, "\\/\\/[\\sa-zA-Z0-9]*\n*"},
         {TOKEN_TYPE::MULTI_LINE_COMMENT, "\\/\\*[\\sa-zA-Z0-9]*\\*\\/"},
@@ -56,7 +56,7 @@ int main() {
     };
 
     // maps token type to corresponding token name
-    const std::map<TOKEN_TYPE, std::string> tokenNames {
+    const std::map<int, std::string> tokenNames {
         {TOKEN_TYPE::CONTENT, "CONTENT"},
         {TOKEN_TYPE::STRING, "STRING"},
         {TOKEN_TYPE::SINGLE_LINE_COMMENT, "SINGLE_LINE_COMMENT"},
@@ -81,7 +81,7 @@ int main() {
     */
 
     std::string srcContents = readFile(cwd/src);
-    std::shared_ptr<Lexi::LLNode<Lexi::TokenData>> root = Lexi::tokenize(&srcContents);
+    std::shared_ptr<Lexi::LLNode> root = Lexi::tokenize(&srcContents);
 
     return EXIT_SUCCESS;
 }
